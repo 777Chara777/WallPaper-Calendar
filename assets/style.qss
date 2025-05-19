@@ -1,0 +1,42 @@
+/* Общие */
+QWidget {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    color: #EEE;
+}
+/* Главное окно */
+#DesktopWidget {
+    background: rgba(30,30,30,200);
+    border-radius: 10px;
+}
+/* Заголовок */
+QLabel#header {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 4px;
+}
+/* Список и элементы */
+QListWidget#eventList {
+    border: none;
+    background: transparent;
+}
+QListWidget#eventList QWidget {
+    background: rgba(50,50,50,150);
+    border-radius: 6px;
+}
+QListWidget#eventList QWidget:hover {
+    background: rgba(255,255,255,30);
+}
+/* Время события */
+QLabel#itemTime {
+    font-size: 10px;
+    color: #CCC;
+}
+/* Кнопки */
+QPushButton {
+    background: #555;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+QPushButton:hover { background: #777; }
+QPushButton:pressed { background: #333; }

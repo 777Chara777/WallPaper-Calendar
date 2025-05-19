@@ -1,0 +1,13 @@
+[project]
+name = "wallpaper-calendar"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "google>=3.0.0",
+    "google-api-python-client>=2.169.0",
+    "google-auth-oauthlib>=1.2.2",
+    "PyQt5-sip>=12.15",
+    "PyQt5-Qt5>=5.15.2",
+]
