@@ -37,18 +37,23 @@ class ReminderLabel(QLabel):
 
     def __init__(self, text=''):
         super().__init__(text)
-        self.setStyleSheet("padding: 2px;")
+        self.default_color: str="#ffffff"
+        self.setStyleSheet(f"color: {self.default_color}; padding: 2px;")
         self.setAttribute(Qt.WA_Hover)
 
     def enterEvent(self, event):
         # подсветка при наведении
-        self.setStyleSheet("background-color: rgba(255, 255, 255, 50); padding: 2px;")
+        self.setStyleSheet(f"color: {self.default_color}; background-color: rgba(255, 255, 255, 50); padding: 2px;")
         super().enterEvent(event)
 
     def leaveEvent(self, event):
         # отменить подсветку
-        self.setStyleSheet("padding: 2px;")
+        self.setStyleSheet(f"color: {self.default_color}; padding: 2px;")
         super().leaveEvent(event)
+
+    def set_text_color(self, color: str):
+        self.default_color = color
+        self.setStyleSheet(f"color: {color}; padding: 2px;")
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -59,6 +64,7 @@ class DesktopWidget(QWidget):
     def __init__(self, settings_window):
         super().__init__()
         self.settings_window = settings_window
+        # self.screen_geometry = self.geometry()
         self.setWindowFlags(
             Qt.FramelessWindowHint |
             Qt.WindowStaysOnBottomHint |
@@ -107,12 +113,14 @@ class DesktopWidget(QWidget):
 
         self.setLayout(layout)
         self.resize(200, 200)
-        self.move(100, 100)
+        # screen_width = self.screen_geometry.width()
+        # screen_height = self.screen_geometry.height()
+        self.move(50, 50)
 
         self.manager = CalendarManager(self.reminder_labels)
         self.timer = QTimer()
         self.timer.timeout.connect(self.manager.update_events)
-        self.timer.start(600000)
+        self.timer.start(300000) # 5 MIN
         self.manager.update_events()
 
     def show_header_menu(self, pos):
@@ -128,9 +136,9 @@ class DesktopWidget(QWidget):
     def toggle_pin(self):
         flags = self.windowFlags()
         if flags & Qt.WindowStaysOnBottomHint:
-            self.setWindowFlags(flags ^ Qt.WindowStaysOnBottomHint)
+            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool | Qt.X11BypassWindowManagerHint)
         else:
-            self.setWindowFlags(flags | Qt.WindowStaysOnBottomHint)
+            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool | Qt.WindowStaysOnTopHint)
         self.show()
 
     def enterEvent(self, event):
