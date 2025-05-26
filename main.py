@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication
 import sys
 
 from src.ui.main_window import DesktopWidget
+from src.utils.resource_path import resource_path
 from src.ui.settings_window import SettingsWindow
 from src.ui.tray import TrayIcon
 
@@ -13,7 +14,7 @@ class CalendarApp:
 
         # Загружаем стили QSS
         try:
-            with open('assets/style.qss', 'r', encoding='utf-8') as f:
+            with open(resource_path('assets/style.qss'), 'r', encoding='utf-8') as f:
                 self.app.setStyleSheet(f.read())
         except FileNotFoundError:
             print("Warning: style.qss not found, using default styles.")

@@ -104,12 +104,12 @@ uv run main.py
 1. Установите PyInstaller:
 
    ```bash
-   pip install pyinstaller
+   uv add pyinstaller
    ```
 2. Соберите приложение:
 
    ```bash
-   pyinstaller --onefile --windowed --icon=assets/icon.ico --add-data "assets/icon.png;assets" main.py -n "wallpaper-calendar-x.x.x"
+   uv run pyinstaller --onefile --windowed --icon=assets/icon.ico --add-data "assets;assets" main.py -n "wallpaper-calendar-x.x.x"
    ```
 3. Готовый `main.exe` будет в `dist/`.
 

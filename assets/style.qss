@@ -1,7 +1,7 @@
 /* Общие */
 QWidget {
     font-family: "Segoe UI", Roboto, sans-serif;
-    color: #EEE;
+    color: #000000;
 }
 /* Главное окно */
 #DesktopWidget {

@@ -102,6 +102,7 @@ class DesktopWidget(QWidget):
         self.header = QLabel("Ближайшие события:")
         self.header.setContextMenuPolicy(Qt.CustomContextMenu)
         self.header.customContextMenuRequested.connect(self.show_header_menu)
+        self.header.setStyleSheet("color: #EEE;")
         layout.addWidget(self.header)
 
         self.reminder_labels = []
