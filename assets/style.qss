@@ -1,42 +1,53 @@
-/* Общие */
 QWidget {
-    font-family: "Segoe UI", Roboto, sans-serif;
-    color: #000000;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    color: #e5e5e5;
+    background-color: rgba(33, 34, 38, 240);
+    border-radius: 12px;
 }
-/* Главное окно */
-#DesktopWidget {
-    background: rgba(30,30,30,200);
-    border-radius: 10px;
-}
-/* Заголовок */
+
 QLabel#header {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    padding-bottom: 4px;
+    color: #ffffff;
 }
-/* Список и элементы */
-QListWidget#eventList {
-    border: none;
+
+QListWidget {
     background: transparent;
+    border: none;
 }
-QListWidget#eventList QWidget {
-    background: rgba(50,50,50,150);
+
+QListWidget::item {
+    padding: 10px;
     border-radius: 6px;
 }
-QListWidget#eventList QWidget:hover {
-    background: rgba(255,255,255,30);
+
+QListWidget::item:hover {
+    background-color: rgba(255, 255, 255, 0.07);
 }
-/* Время события */
-QLabel#itemTime {
-    font-size: 10px;
-    color: #CCC;
-}
-/* Кнопки */
+
 QPushButton {
-    background: #555;
-    border: none;
+    background-color: #5865F2;
+    color: white;
+    border-radius: 6px;
     padding: 6px 12px;
+    font-weight: 500;
+}
+
+QPushButton:hover {
+    background-color: #4752C4;
+}
+
+
+QListWidget#eventList {
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    color: #e5e5e5;
+}
+QListWidget::item {
+    padding: 6px 10px;
     border-radius: 4px;
 }
-QPushButton:hover { background: #777; }
-QPushButton:pressed { background: #333; }
+QListWidget::item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
