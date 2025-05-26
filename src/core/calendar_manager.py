@@ -84,6 +84,7 @@ class CalendarManager:
                             if color >= day:
                                 lbl.set_text_color( color_map[color] )
                                 break
+                            lbl.set_text_color("#ffffff")
                     lbl.setText(txt or "Нет события")
 
             except Exception as ex:
