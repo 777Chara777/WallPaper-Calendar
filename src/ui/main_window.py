@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QMenu, QAction, QDialog, QPushButton, QHBoxLayout, QListWidget
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QPoint
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
-from core.calendar_manager import CalendarManager
+from src.core.calendar_manager import CalendarManager
 
 # Диалог карточки события
 class EventCardDialog(QDialog):

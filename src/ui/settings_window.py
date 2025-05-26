@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
-from core.calendar_manager import CalendarManager
+from src.core.calendar_manager import CalendarManager
 
 
 class SettingsWindow(QDialog):

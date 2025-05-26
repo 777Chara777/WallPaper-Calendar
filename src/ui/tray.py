@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
 from PyQt5.QtGui import QIcon, QCursor
 from PyQt5.QtCore import Qt
 
+from src.utils.resource_path import resource_path
+
 
 class TrayIcon(QSystemTrayIcon):
     """
@@ -11,7 +13,7 @@ class TrayIcon(QSystemTrayIcon):
     """
 
     def __init__(self, app, widget, settings_window):
-        icon = QIcon("assets/icon.png")
+        icon = QIcon(resource_path("assets/icon.png"))
         super().__init__(icon, app)
 
         self._widget = widget

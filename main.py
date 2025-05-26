@@ -3,9 +3,9 @@
 from PyQt5.QtWidgets import QApplication
 import sys
 
-from ui.main_window import DesktopWidget
-from ui.settings_window import SettingsWindow
-from ui.tray import TrayIcon
+from src.ui.main_window import DesktopWidget
+from src.ui.settings_window import SettingsWindow
+from src.ui.tray import TrayIcon
 
 class CalendarApp:
     def __init__(self):
