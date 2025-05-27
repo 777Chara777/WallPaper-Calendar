@@ -1,17 +1,18 @@
+import os
+import json
 import threading
 import datetime
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+# from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-from typing import List, Any
+# from src.core.client_manager import OAuthTokenReceiver
 
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem
 from PyQt5.QtGui import QColor
 
-# SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-# SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
-# SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
+
+
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/tasks.readonly"]
 
 color_map: dict[int, str] = {
@@ -22,8 +23,6 @@ event_map = {
     "event": "[EVEN]",
     "task": "[TASK]"
 }
-
-
 
 def date_until(date_str: str):
     # Удалим пробелы после двоеточий (если есть)
@@ -54,7 +53,6 @@ def human_days_until(date: datetime.datetime):
         return f"через {delta} дней ({date.day} {date.strftime('%B')})"
 
 
-
 def get_color(date: datetime.datetime) -> str:
     delta = days_until(date)
     for color in color_map:
@@ -63,10 +61,14 @@ def get_color(date: datetime.datetime) -> str:
     return "#ffffff"
 
 
+def check_token() -> bool:
+    return os.path.isfile("token.json")
+
 class CalendarManager:
-    def __init__(self, list_widget: QListWidget, get_event_limit):
+    def __init__(self, list_widget: QListWidget, get_event_limit, get_auth):
         self.list_widget = list_widget
         self.get_event_limit = get_event_limit
+        self.get_auth = get_auth
 
     def get_events(self) -> list:
         try:
@@ -114,6 +116,9 @@ class CalendarManager:
         return []        
 
     def update_events(self):
+        if not check_token():
+            print("mmmmm no token.json")
+            return
         def fetch():
             try:
                 events = self.get_events()[:self.get_event_limit()]
@@ -141,17 +146,31 @@ class CalendarManager:
 
         threading.Thread(target=fetch, daemon=True).start()
 
-
     @staticmethod
     def get_google_service():
-        try:
+        creds = None
+        if check_token():
             creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-        except:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
+            # "Пожалуйста через настройки настройте auth и перезапстите приложение!"
 
-            with open('token.json', 'w') as token:
-                token.write(creds.to_json())
+            # auth = self.get_auth()
+            # if auth != "":
+            #     webbrowser.open(auth)
+
+            # flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            # creds = flow.run_local_server(port=0)
+
+            # with open('token.json', 'w') as token:
+            #     token.write(creds.to_json())
 
         return build('calendar', 'v3', credentials=creds), build("tasks", "v1", credentials=creds)
-
+    
+    def auth_(self):
+        auth_link = self.get_auth()
+        if auth_link != "":
+            pass
+            # client = OAuthTokenReceiver(auth_link)
+            # creds = client.run(True)
+            # with open('token.json', 'w') as token:
+            #     token.write(json.dumps(creds))
+            

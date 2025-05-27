@@ -12,4 +12,5 @@ dependencies = [
     "pyqt5-qt5==5.15.2",
     "pyqt5==5.15.11",
     "pyinstaller>=6.13.0",
+    "flask>=3.1.1",
 ]

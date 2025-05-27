@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QMenu
 )
 
-from src.core.calendar_manager import CalendarManager
+from src.core.calendar_manager import CalendarManager, check_token
 from src.ui.settings_window import SettingsWindow
 
 class DesktopWidget(QWidget):
@@ -59,7 +59,11 @@ class DesktopWidget(QWidget):
         self.event_list.setObjectName("eventList")
         layout.addWidget(self.event_list, stretch=1)
 
-        self.manager = CalendarManager(self.event_list, self._get_event_limit)
+        self.manager = CalendarManager(self.event_list, self._get_event_limit, self.settings.get_auth)
+        if not check_token():
+            self.event_list.addItem("Пожалуйста через настройки настройте auth и перезапстите приложение!")
+            self.manager.auth_()
+
 
     def _update_ui(self):
         self.setWindowOpacity(self.settings.get_opacity())
