@@ -116,7 +116,7 @@ Run with desired mode:
 1. Start build file:
 
    ```bash
-   uv run build.py
+   uv run build.py debug  # Use 'debug' argument to build with console (CMD) open for debugging
    ```
 
 2. The built executable `wallpaper-calendar.exe` will be in the `dist/` folder.
