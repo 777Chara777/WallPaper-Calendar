@@ -21,9 +21,9 @@ class TrayIcon(QSystemTrayIcon):
 
         # Создаем контекстное меню
         self.menu = QMenu()
-        open_action = QAction("Открыть", self, triggered=self._widget.show)
-        settings_action = QAction("Настройки", self, triggered=self._settings.show)
-        exit_action = QAction("Выход", self, triggered=self._exit)
+        open_action = QAction("Open", self, triggered=self._widget.show)
+        settings_action = QAction("Settings", self, triggered=self._settings.show)
+        exit_action = QAction("Exit", self, triggered=self._exit)
 
         self.menu.addAction(open_action)
         self.menu.addAction(settings_action)
@@ -31,7 +31,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(exit_action)
 
         self.setContextMenu(self.menu)
-        self.setToolTip("Календарь запущен")
+        self.setToolTip("The calendar has been launched")
 
         # Обработка кликов на иконке
         self.activated.connect(self._on_activated)

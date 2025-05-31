@@ -1,6 +1,6 @@
 [project]
 name = "wallpaper-calendar"
-version = "0.1.5"
+version = "1.0.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,4 +13,5 @@ dependencies = [
     "pyqt5==5.15.11",
     "pyinstaller>=6.13.0",
     "flask>=3.1.1",
+    "toml>=0.10.2",
 ]

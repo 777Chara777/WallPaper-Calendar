@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, QSettings
 class SettingsWindow(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Настройки")
+        self.setWindowTitle("Settings")
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self.setFixedSize(300, 200)
 
@@ -15,35 +15,35 @@ class SettingsWindow(QDialog):
 
         # Горизонтальный layout для count_input
         count_layout = QHBoxLayout()
-        count_layout.addWidget(QLabel("Сколько событий показывать:"))
+        count_layout.addWidget(QLabel("Number of events to display:"))
         self.count_input = QLineEdit()
-        self.count_input.setPlaceholderText("По умолчанию 5")
+        self.count_input.setPlaceholderText("Default: 5")
         self.count_input.setText(str(self.get_event_limit()))
         count_layout.addWidget(self.count_input)
         main_layout.addLayout(count_layout)
 
         # Горизонтальный layout для opacity
         opacity_layout = QHBoxLayout()
-        opacity_layout.addWidget(QLabel("Прозрачность (0.0 - 1.0):"))
+        opacity_layout.addWidget(QLabel("Opacity (0.0 - 1.0):"))
         self.opacity_input = QLineEdit()
-        self.opacity_input.setPlaceholderText("По умолчанию 0.3")
+        self.opacity_input.setPlaceholderText("Default: 0.3")
         self.opacity_input.setText(str(self.get_opacity()))
         opacity_layout.addWidget(self.opacity_input)
         main_layout.addLayout(opacity_layout)
         
         # Горизонтальный layout для auth
         auth_layout = QHBoxLayout()
-        auth_layout.addWidget(QLabel("ссылка для получения token:"))
+        auth_layout.addWidget(QLabel("Auth link to get token:"))
         self.auth_input = QLineEdit()
-        self.auth_input.setPlaceholderText("ссылка воот")
+        self.auth_input.setPlaceholderText("Paste the link here")
         self.auth_input.setText(self.get_auth())
         auth_layout.addWidget(self.auth_input)
         main_layout.addLayout(auth_layout)
 
         # Горизонтальный layout для кнопок
         buttons_layout = QHBoxLayout()
-        self.ok_button = QPushButton("Готово")
-        self.cancel_button = QPushButton("Отмена")
+        self.ok_button = QPushButton("Done")
+        self.cancel_button = QPushButton("Cancel")
         # buttons_layout.addStretch(1)  # Отодвинет кнопки вправо
         buttons_layout.addWidget(self.ok_button)
         buttons_layout.addWidget(self.cancel_button)

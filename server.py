@@ -1,14 +1,19 @@
 # server.py
+import os
 import json
 import time
 import requests
 import urllib.parse
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 from google.oauth2.credentials import Credentials
 
 app = Flask(__name__)
+
+if not os.path.isfile("./secrets/credentials.json"):
+    print("Please add credentials.json in the directory './secrets/'. To add credentials.json, please go to Google Cloud and authorize the new application.")
+    exit(1)
 
 with open('./secrets/credentials.json') as f:
     creds = json.load(f)
@@ -17,6 +22,10 @@ CLIENT_ID = creds['installed']['client_id']
 CLIENT_SECRET = creds['installed']['client_secret']
 REDIRECT_URI = 'http://localhost:8080'
 SCOPE = 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/tasks.readonly'
+
+@app.route('/ping', methods=["GET"])
+def ping():
+    return Response("pong", status=200)
 
 @app.route('/auth_url')
 def auth_url():

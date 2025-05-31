@@ -1,132 +1,141 @@
 # Wallpaper Calendar
 
-**Полупрозрачный виджет-календарь для рабочего стола**, отображающий ближайшие события из Google Calendar и позволяющий быстро добавлять новые события.
+**A semi-transparent desktop calendar widget** that displays upcoming events from Google Calendar and allows quick adding of new events.
 
 ---
 
-## 🚀 Возможности
+## 🚀 Features
 
-* **Прозрачный виджет** на рабочем столе с эффектом появления при наведении.
-* **Прокручиваемый список** ближайших событий.
-* **Контекстное меню** на заголовке для настроек:
-
-  * Открыть окно настроек
-  * Закрепить/отпустить окно
-  * Изменить размер или прозрачность
-* **Добавление событий** прямо из окна настроек.
-* **Системный лоток (трей)** с быстрым доступом:
-
-  * Открыть виджет
-  * Открыть настройки
-  * Выход из приложения
-* **Автообновление** каждые 10 минут.
-* **Возможность расширения**: подключение локальных `.ics` файлов, других источников событий.
+* **Transparent desktop widget** with a fade-in effect on hover.  
+* **Scrollable list** of upcoming events.  
+* **Context menu** on the header for settings:  
+  - Open settings window  
+  - Pin/unpin the widget  
+  - Resize or adjust transparency  
+* **Add events** directly from the settings window.  
+* **System tray icon** for quick access:  
+  - Open widget  
+  - Open settings  
+  - Exit application  
+* **Auto-refresh** every 10 minutes.  
+* **Embedded Flask server** to handle OAuth and token refresh operations.  
+* **Run modes via command line:**  
+  - `calendar` — run only the desktop calendar app  
+  - `server` — run only the Flask server  
+  - `all` — run both calendar and server concurrently  
+* **Extensible:** support for local `.ics` files and other event sources.
 
 ---
 
-## 📂 Структура проекта
+## 📂 Project Structure
 
-```
+```text
 wallpaper_calendar/
-├── main.py                  # Точка входа
+├── main.py                  # Entry point with argparse to run calendar, server or both
+├── server.py                # Flask server handling OAuth and tokens
 ├── src/
-|   ├── ui/
-│   │   ├── main_window.py       # Окно-виджет
-│   │   ├── settings_window.py   # Окно настроек
-│   │   └── tray.py              # Иконка в трей
-|   └── core/
-│       ├── calendar_manager.py  # Менеджер Google Calendar
-│       └── event_parser.py      # (заглушка) Для .ics и других событий
+│   ├── ui/
+│   │   ├── main_window.py       # Widget window
+│   │   ├── settings_window.py   # Settings window
+│   │   └── tray.py              # System tray icon
+│   └── core/
+│       ├── calendar_manager.py  # Google Calendar manager
+│       └── event_parser.py      # (stub) For .ics and other events
 ├── assets/
-│   ├── icon.png             # Иконка для трея
-│   ├── icon.ico             # Иконка для ПО
-│   └── style.qss            # Стили QSS
-├── pyproject.toml           # Список зависимостей
-└── README.md                # Руководство пользователя
-```
+│   ├── icon.png             # Tray icon
+│   ├── icon.ico             # Application icon
+│   └── style.qss            # QSS styles
+├── pyproject.toml           # Dependency list
+└── README.md                # User guide
+````
 
 ---
 
-## 🛠 Установка
+## 🛠 Installation
 
-1. Клонируйте репозиторий:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/777Chara777/wallpaper_calendar.git
    cd wallpaper_calendar
    ```
-2. Создайте виртуальное окружение и активируйте его:
-3. Установите зависимости:
+
+2. Create and activate a virtual environment (example for bash):
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install dependencies:
 
    ```bash
    uv sync
    ```
-4. Скопируйте `credentials.json` из Google Cloud Console в корень проекта.
+
+4. Copy `credentials.json` from Google Cloud Console to the project root.
 
 ---
 
-## ⚙️ Настройка Google Calendar API
+## ⚙️ Google Calendar API Setup
 
-1. Перейдите в [Google Cloud Console](https://console.cloud.google.com/).
-2. Создайте проект и включите **Google Calendar API**.
-3. В разделе **Credentials** создайте **OAuth Client ID** для настольного приложения.
-4. Скачайте `credentials.json` и поместите его в корень проекта.
-5. При первом запуске приложение создаст `token.json` после авторизации.
-
----
-
-## ▶️ Запуск приложения
-
-```bash
-uv run main.py
-```
-
-* Виджет появится на рабочем столе.
-* В трее появится иконка для управления.
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project and enable the **Google Calendar API**.
+3. Under **Credentials**, create an **OAuth Client ID** for a desktop application.
+4. Download the `credentials.json` file and place it in the project root.
+5. On the first run, the app will generate a `token.json` after authorization.
 
 ---
 
-## 🖌 Стили и кастомизация
+## ▶️ Running the Application
 
-Все стили вынесены в `assets/style.qss`. Открывайте и правьте CSS:
+Run with desired mode:
 
-```css
-/* Пример изменения фонового цвета */
-#DesktopWidget {
-    background: rgba(50, 50, 50, 180);
-}
-```
+* **Calendar only (default):**
+
+  ```bash
+  python main.py --mode calendar
+  ```
+
+* **Server only:**
+
+  ```bash
+  python main.py --mode server --ip 127.0.0.1 --port 5000
+  ```
+
+* **Both calendar and server:**
+
+  ```bash
+  python main.py --mode all
+  ```
 
 ---
 
-## 📦 Сборка в .exe (Windows)
+## 📦 Building a Windows .exe
 
-1. Установите PyInstaller:
+1. Start build file:
 
    ```bash
-   uv add pyinstaller
+   uv run build.py
    ```
-2. Соберите приложение:
 
-   ```bash
-   uv run pyinstaller --onefile --windowed --icon=assets/icon.ico --add-data "assets;assets" main.py -n "wallpaper-calendar-x.x.x"
-   ```
-3. Готовый `main.exe` будет в `dist/`.
+2. The built executable `wallpaper-calendar.exe` will be in the `dist/` folder.
 
 ---
 
-## 🚧 Развитие проекта
+## 🚧 Future Development
 
-* **Поддержка локальных `.ics`** файлов через `core/event_parser.py`.
-* **Интеграция** с другими календарями и сервисами.
-* **Настройки UI**: темы, прозрачность, шрифты.
-* **Экспорт**/импорт событий.
+* Support for local `.ics` files via `core/event_parser.py`.
+* Integration with other calendars and services.
+* UI settings: themes, transparency, fonts.
+* Event import/export features.
 
 ---
 
-## 🤝 Вклад и лицензия
+## 🤝 Contribution & License
 
-Пул-реквесты приветствуются! Проект лицензируется под MIT.
+Pull requests are welcome!
+This project is licensed under the MIT License.
 
 ---
 

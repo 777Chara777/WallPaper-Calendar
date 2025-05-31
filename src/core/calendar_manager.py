@@ -8,8 +8,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 from src.core.client_manager import OAuthTokenReceiver
-from src.utils import check_token
-from src.utils import Logger
+from src.utils import check_token, Logger, get_token
 
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem
 from PyQt5.QtGui import QColor
@@ -46,13 +45,13 @@ def human_days_until(date: datetime.datetime):
     delta = days_until(date)
     time = "%02d:%02d" % (date.hour, date.minute)
     if delta == 0:
-        return f"сегодня в {time}"
+        return f"today at {time}"
     elif delta == 1:
-        return f"завтра в {time}"
+        return f"tomorrow at {time}"
     elif delta == 2:
-        return f"послезавтра в {time}"
+        return f"the day after tomorrow at {time}"
     else:
-        return f"через {delta} дней ({date.day} {date.strftime('%B')})"
+        return f"in {delta} days at ({date.day} {date.strftime('%B')})"
 
 
 def get_color(date: datetime.datetime) -> str:
@@ -91,7 +90,7 @@ class CalendarManager:
             for event in calendar_events:
                 start = event["start"].get("dateTime", event["start"].get("date"))
                 merged_items.append({
-                    "title": event.get("summary", "Без названия"),
+                    "title": event.get("summary", "Untitled"),
                     "datetime": start,
                     "type": "event"
                 })
@@ -104,7 +103,7 @@ class CalendarManager:
                     if task.get("status") != "completed":
                         due = task.get("due")  # Может быть None
                         merged_items.append({
-                            "title": task.get("title", "Без названия"),
+                            "title": task.get("title", "Untitled"),
                             "datetime": due if due else "9999-12-31T00:00:00Z",
                             "type": "task"
                         })
@@ -144,28 +143,20 @@ class CalendarManager:
             except Exception as ex:
                 self.logger.warm(f"Error (update_events): {ex.__class__} {ex}")
                 self.list_widget.clear()
-                self.list_widget.addItem("• Ошибка загрузки событий.")
+                self.list_widget.addItem("• Error loading events.")
 
         threading.Thread(target=fetch, daemon=True).start()
 
-    # @staticmethod
-    # def get_google_service():
-    #     creds = None
-    #     if check_token():
-    #         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-
-    #     return build('calendar', 'v3', credentials=creds), build("tasks", "v1", credentials=creds)
-    
     def get_google_service(self):
         creds = None
         if check_token():
-            token_data = json.load(open('token.json', 'r'))
+            token_data = get_token()
             expires_at = token_data.get('expires_at', 0)
             if time.time() > expires_at - 300:  # Обновляем если истекает через 5 минут
                 self.logger.info("refresh token")
                 # Тут можно вызвать обновление токена# заглушки
                 self.client_network.refresh_token()
-                token_data = json.load(open('token.json', 'r'))
+                token_data = get_token()
 
             creds = Credentials(
                 token=token_data.get("access_token"),

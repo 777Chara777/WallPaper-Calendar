@@ -4,23 +4,26 @@ from PyQt5.QtWidgets import (
     QMenu
 )
 
-from src.core.calendar_manager import CalendarManager, check_token
+from src.core.calendar_manager import CalendarManager
+from src.utils import get_token, check_token, Logger
 from src.ui.settings_window import SettingsWindow
 
 class DesktopWidget(QWidget):
     _drag_pos = None
     _is_movable = False
     """
-    Прозрачный виджет, отображающий список событий и задач.
-    Поддерживает сохранение позиции и количество событий из настроек.
+    Transparent widget displaying a list of events and tasks.
+    Supports saving position and number of events from settings.
     """
 
     def __init__(self, settings_window: SettingsWindow):
         super().__init__()
+        self.logger = Logger("DesktopWidget")
         self.settings = settings_window
         self._init_window()
         self._init_ui()
         self._init_timer()
+        self._init_settings()
 
     def _init_window(self):
         self.setWindowFlags(
@@ -31,18 +34,17 @@ class DesktopWidget(QWidget):
         )
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(self.settings.get_opacity())
-        # self.setFixedSize(280, 520) # Халтура >:(
         self.resize(280, 520)
         
-        # loads
         self._load_position()
 
     def _init_ui(self):
+        self.logger.info("Initializing UI...")
         self.setMouseTracking(True)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        self.header = QLabel("Ближайшие события и задачи:")
+        self.header = QLabel("Upcoming events and tasks:")
         self.header.setObjectName("header")
         self.header.setContextMenuPolicy(Qt.CustomContextMenu)
         self.header.customContextMenuRequested.connect(self._show_header_menu)
@@ -63,11 +65,17 @@ class DesktopWidget(QWidget):
         auth_link = self.manager.get_auth()
         if auth_link != "":
             self.manager.client_network.set_server_url(auth_link)
-        
-        if not check_token():
-            self.event_list.addItem("Пожалуйста через настройки настройте auth и перезапстите приложение!")
-            self.manager.authorize()
 
+    def _init_settings(self):
+        self.logger.info("Applying settings...")
+        self.event_list.clear()
+        if not check_token():
+            self.event_list.addItem("Please configure authorization in settings and restart the application.")
+            self.manager.authorize()
+        elif check_token() and "error" in get_token():
+            self.event_list.addItem("Error in token.json. Please check its contents.")
+        elif self.manager.client_network._check_server() != 200:
+            self.event_list.addItem("The server is not responding!")
 
     def _update_ui(self):
         self.setWindowOpacity(self.settings.get_opacity())
@@ -77,21 +85,22 @@ class DesktopWidget(QWidget):
         self.manager.update_events()
 
     def _init_timer(self):
+        self.logger.info("Initializing update timer...")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.manager.update_events)
-        self.timer.start(5 * 60 * 1000)  # 5 минут
+        self.timer.start(5 * 60 * 1000)  # every 5 minutes
         self.manager.update_events()
 
     def _show_header_menu(self, pos):
         menu = QMenu(self)
-        menu.addAction("Настройки", self._show_settings)
+        menu.addAction("Settings", self._show_settings)
         menu.addSeparator()
-        menu.addAction("Закрепить/Отпустить", self._toggle_pin)
-        menu.addAction("Обновить", self.manager.update_events)
+        menu.addAction("Toggle Pin", self._toggle_pin)
+        menu.addAction("Refresh", self.manager.update_events)
         menu.exec_(self.header.mapToGlobal(pos))
 
     def _show_settings(self):
-        self.settings.exec_()  # <-- Ждёт закрытия окна
+        self.settings.exec_()  # Waits for the settings dialog to close
         self._update_ui()
 
     def _toggle_pin(self):
@@ -99,20 +108,23 @@ class DesktopWidget(QWidget):
         if flags & Qt.WindowStaysOnBottomHint:
             flags &= ~Qt.WindowStaysOnBottomHint
             self._is_movable = True
+            self.logger.info("Widget unpinned and now movable.")
         else:
             flags |= Qt.WindowStaysOnBottomHint
             self._is_movable = False
+            self.logger.info("Widget pinned to bottom and locked.")
         self.setWindowFlags(Qt.WindowFlags(flags))
         self.show()
 
     def _get_event_limit(self):
-        return self.settings.get_event_limit()        
+        return self.settings.get_event_limit()
 
     def _load_position(self):
         settings = QSettings("Dorko", "WallpaperCalendar")
         pos = settings.value("window_pos")
         if pos:
             self.move(pos)
+            self.logger.info(f"Loaded saved position: {pos}")
 
     def _save_position(self):
         settings = QSettings("Dorko", "WallpaperCalendar")
