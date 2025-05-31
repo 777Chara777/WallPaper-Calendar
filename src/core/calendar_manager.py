@@ -1,16 +1,18 @@
 import os
 import json
+import time
 import threading
 import datetime
 from google.oauth2.credentials import Credentials
 # from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-# from src.core.client_manager import OAuthTokenReceiver
+from src.core.client_manager import OAuthTokenReceiver
+from src.utils import check_token
+from src.utils import Logger
 
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem
 from PyQt5.QtGui import QColor
-
 
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/tasks.readonly"]
@@ -42,7 +44,7 @@ def days_until(date: datetime.datetime):
 
 def human_days_until(date: datetime.datetime):
     delta = days_until(date)
-    time = "%2d:%2d" % (date.hour, date.minute)
+    time = "%02d:%02d" % (date.hour, date.minute)
     if delta == 0:
         return f"сегодня в {time}"
     elif delta == 1:
@@ -61,14 +63,14 @@ def get_color(date: datetime.datetime) -> str:
     return "#ffffff"
 
 
-def check_token() -> bool:
-    return os.path.isfile("token.json")
-
 class CalendarManager:
     def __init__(self, list_widget: QListWidget, get_event_limit, get_auth):
         self.list_widget = list_widget
         self.get_event_limit = get_event_limit
         self.get_auth = get_auth
+
+        self.logger = Logger("CalendarManager")
+        self.client_network = OAuthTokenReceiver(None)
 
     def get_events(self) -> list:
         try:
@@ -112,12 +114,12 @@ class CalendarManager:
 
             return merged_items
         except Exception as ex:
-            print(f"Error (get_events) : {ex.__class__} {ex}" )
+            self.logger.warm(f"Error (get_events) : {ex.__class__} {ex}" )
         return []        
 
     def update_events(self):
         if not check_token():
-            print("mmmmm no token.json")
+            self.logger.info("mmmmm no token.json")
             return
         def fetch():
             try:
@@ -140,37 +142,46 @@ class CalendarManager:
                     self.list_widget.addItem(item)
 
             except Exception as ex:
-                print(f"Error (update_events): {ex.__class__} {ex}")
+                self.logger.warm(f"Error (update_events): {ex.__class__} {ex}")
                 self.list_widget.clear()
                 self.list_widget.addItem("• Ошибка загрузки событий.")
 
         threading.Thread(target=fetch, daemon=True).start()
 
-    @staticmethod
-    def get_google_service():
+    # @staticmethod
+    # def get_google_service():
+    #     creds = None
+    #     if check_token():
+    #         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
+    #     return build('calendar', 'v3', credentials=creds), build("tasks", "v1", credentials=creds)
+    
+    def get_google_service(self):
         creds = None
         if check_token():
-            creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-            # "Пожалуйста через настройки настройте auth и перезапстите приложение!"
+            token_data = json.load(open('token.json', 'r'))
+            expires_at = token_data.get('expires_at', 0)
+            if time.time() > expires_at - 300:  # Обновляем если истекает через 5 минут
+                self.logger.info("refresh token")
+                # Тут можно вызвать обновление токена# заглушки
+                self.client_network.refresh_token()
+                token_data = json.load(open('token.json', 'r'))
 
-            # auth = self.get_auth()
-            # if auth != "":
-            #     webbrowser.open(auth)
-
-            # flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            # creds = flow.run_local_server(port=0)
-
-            # with open('token.json', 'w') as token:
-            #     token.write(creds.to_json())
-
+            creds = Credentials(
+                token=token_data.get("access_token"),
+                # refresh_token=token_data.get("refresh_token"),
+                # token_uri="https://oauth2.googleapis.com/token",
+                # client_id='ваш_client_id',
+                # client_secret='ваш_client_secret',
+                # scopes=SCOPES,
+                # expiry=None if 'expires_at' not in token_data else datetime.datetime.fromtimestamp(token_data['expires_at'])
+            )
         return build('calendar', 'v3', credentials=creds), build("tasks", "v1", credentials=creds)
-    
-    def auth_(self):
+
+    def authorize(self):
         auth_link = self.get_auth()
         if auth_link != "":
-            pass
-            # client = OAuthTokenReceiver(auth_link)
-            # creds = client.run(True)
-            # with open('token.json', 'w') as token:
-            #     token.write(json.dumps(creds))
-            
+            self.logger.info("Autorize start...")
+            creds = self.client_network.run(True)
+            with open('token.json', 'w') as token:
+                token.write(json.dumps(creds))

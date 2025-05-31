@@ -60,13 +60,20 @@ class DesktopWidget(QWidget):
         layout.addWidget(self.event_list, stretch=1)
 
         self.manager = CalendarManager(self.event_list, self._get_event_limit, self.settings.get_auth)
+        auth_link = self.manager.get_auth()
+        if auth_link != "":
+            self.manager.client_network.set_server_url(auth_link)
+        
         if not check_token():
             self.event_list.addItem("Пожалуйста через настройки настройте auth и перезапстите приложение!")
-            self.manager.auth_()
+            self.manager.authorize()
 
 
     def _update_ui(self):
         self.setWindowOpacity(self.settings.get_opacity())
+        auth_link = self.manager.get_auth()
+        if auth_link != "":
+            self.manager.client_network.set_server_url(auth_link)
         self.manager.update_events()
 
     def _init_timer(self):
