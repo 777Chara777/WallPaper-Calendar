@@ -33,14 +33,17 @@
 wallpaper_calendar/
 ├── main.py                  # Entry point with argparse to run calendar, server or both
 ├── server.py                # Flask server handling OAuth and tokens
+├── build.py
 ├── src/
 │   ├── ui/
 │   │   ├── main_window.py       # Widget window
 │   │   ├── settings_window.py   # Settings window
 │   │   └── tray.py              # System tray icon
-│   └── core/
-│       ├── calendar_manager.py  # Google Calendar manager
-│       └── event_parser.py      # (stub) For .ics and other events
+│   ├── core/
+│   │   ├── calendar_manager.py  # Google Calendar manager
+│   │   └── client_manager.py    # 
+|   └── utils/
+│       └── __init__.py
 ├── assets/
 │   ├── icon.png             # Tray icon
 │   ├── icon.ico             # Application icon
