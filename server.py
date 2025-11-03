@@ -51,17 +51,6 @@ def get_exchange():
     }
     token_data = requests.post("https://oauth2.googleapis.com/token", data=params).json()
 
-    # token_data["client_id"] = CLIENT_ID
-    # token_data["client_secret"] = CLIENT_SECRET
-    # token_data["scopes"] = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/tasks.readonly"]
-    # token_data["universe_domain"] = "googleapis.com"
-    # token_data["token_uri"] = "https://oauth2.googleapis.com/token"
-    # print(f"token_data: {token_data}")
-
-    # creds = Credentials.from_authorized_user_info(token_data)
-
-    # return jsonify(json.loads(creds.to_json()))
-
     token_data["obtained_at"] = time.time()  # удобно для кэширования
 
     return jsonify(token_data)

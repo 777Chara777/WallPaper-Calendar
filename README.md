@@ -43,14 +43,28 @@ wallpaper_calendar/
 │   │   ├── calendar_manager.py  # Google Calendar manager
 │   │   └── client_manager.py    # 
 |   └── utils/
+|       ├── Logger               # Its my custom logger
 │       └── __init__.py
 ├── assets/
 │   ├── icon.png             # Tray icon
 │   ├── icon.ico             # Application icon
-│   └── style.qss            # QSS styles
+│   ├── style.qss            # QSS styles
+|   └── ...                  # Funny XD  
 ├── pyproject.toml           # Dependency list
 └── README.md                # User guide
 ````
+
+---
+
+## 🖼 Screenshots & Demo
+
+### Preview
+![Widget Preview](assets/wallpaper.png)  
+*How the desktop widget looks on your screen.*
+
+### Usage Video
+[![Watch the demo](assets/video_thumbnail.png)](assets/wallpaper-demo.mp4)  
+*Click the image to watch the usage demo.*
 
 ---
 
@@ -97,19 +111,19 @@ Run with desired mode:
 * **Calendar only (default):**
 
   ```bash
-  python main.py --mode calendar
+  uv run main.py --mode calendar
   ```
 
 * **Server only:**
 
   ```bash
-  python main.py --mode server --ip 127.0.0.1 --port 5000
+  uv run main.py --mode server --ip 127.0.0.1 --port 5000
   ```
 
 * **Both calendar and server:**
 
   ```bash
-  python main.py --mode all
+  uv run main.py --mode all
   ```
 
 ---
