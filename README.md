@@ -66,6 +66,7 @@ wallpaper_calendar/
 
 ### Usage Video
 https://github.com/user-attachments/assets/3fedb2cf-32bf-434d-a031-134de7a26529
+
 *Click the image to watch the usage demo.*
 
 ---
