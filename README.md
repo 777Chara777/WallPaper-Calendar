@@ -1,3 +1,5 @@
+
+
 # Wallpaper Calendar
 
 **A semi-transparent desktop calendar widget** that displays upcoming events from Google Calendar and allows quick adding of new events.
@@ -63,7 +65,7 @@ wallpaper_calendar/
 *How the desktop widget looks on your screen.*
 
 ### Usage Video
-[![Watch the demo](assets/video_thumbnail.png)](assets/wallpaper-demo.mp4)  
+https://github.com/user-attachments/assets/3fedb2cf-32bf-434d-a031-134de7a26529
 *Click the image to watch the usage demo.*
 
 ---
